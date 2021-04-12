@@ -7,6 +7,8 @@ public class Creator : Action
     public GameObject original;
     public FloatData speed;
     public FloatData damping;
+    public FloatData size;
+    public FloatData density;
 
     bool action { get; set; } = false;
 
@@ -30,9 +32,10 @@ public class Creator : Action
             if(gameObject.TryGetComponent<Body>(out Body body))
             {
                 Vector2 force = Random.insideUnitSphere.normalized * speed.value;
-
-                body.AddForce(force);
-                body.damping = damping.value;
+                body.AddForce(force, Body.ForceMode.Velocity);
+                body.damping = damping;
+                body.shape.size = size;
+                body.shape.density = density;
                 World.Instance.bodies.Add(body);
             }
         }
