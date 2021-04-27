@@ -27,12 +27,16 @@ public class Body : MonoBehaviour
 
     public float damping { get; set; } = 0;
     public float mass { get => shape.mass; }
+    public float inverseMass { get => (mass == 0) ? 0 : 1 / mass; }
+    public float restitution { get; set; } = 0.5f;
 
     public eType type { get; set; }
 
 
     public void AddForce(Vector2 force, ForceMode forceMode = ForceMode.Force)
     {
+        if (type == Body.eType.Static) return;
+
         switch (forceMode)
         {
             case ForceMode.Force:
@@ -51,6 +55,8 @@ public class Body : MonoBehaviour
 
     public void Step(float dt)
     {
-        acceleration = World.Instance.Gravity + (force / mass);
+        if (type != Body.eType.Dynamic) return;
+
+        acceleration = World.Instance.Gravity + (force * inverseMass);
     }
 }
